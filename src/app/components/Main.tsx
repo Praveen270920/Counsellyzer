@@ -1,4 +1,5 @@
 "use client"
+import { ChevronDown, ChevronUp } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 type Post = {
@@ -16,12 +17,22 @@ type Post = {
    ST: number;
 };
 
-export default function Home() {
+interface MainProps {
+  selectedCategories: string[];
+}
+
+export default function Home({ selectedCategories }: MainProps) {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [category, setCategory] = useState<string>("c");
   const [filter, setFilter] = useState<string>("4");
+  const [sortKey, setSortKey] = useState<keyof Post | null>(null);
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+  const [searchTerm, setSearchTerm] = useState<string>("");
+
+
+
 
   // Fetch when dropdowns change
   useEffect(() => {
@@ -44,7 +55,7 @@ export default function Home() {
         return res.json();
       })
       .then((data) => {
-        setPosts(data);
+        setPosts(data.slice(0, 10)); // slice the data for dev....
       })
       .catch((err: unknown) => {
         if (err instanceof Error) {
@@ -58,11 +69,51 @@ export default function Home() {
       });
   };
 
+  const sortedPosts = [...posts].sort((a, b) => {
+    if (!sortKey) return 0;
+  
+    const valA = a[sortKey];
+    const valB = b[sortKey];
+  
+    if (typeof valA === 'string' && typeof valB === 'string') {
+      return sortOrder === 'asc'
+        ? valA.localeCompare(valB)
+        : valB.localeCompare(valA);
+    }
+  
+    if (typeof valA === 'number' && typeof valB === 'number') {
+      return sortOrder === 'asc' ? valA - valB : valB - valA;
+    }
+  
+    return 0;
+  });
+
+  const handleSort = (key: keyof Post) => {
+    if (sortKey === key) {
+      setSortOrder((prev) => (prev === 'asc' ? 'desc' : 'asc'));
+    } else {
+      setSortKey(key);
+      setSortOrder('asc');
+    }
+  };
+
+  const filteredPosts = sortedPosts.filter((post) => {
+    const matchesSearch =
+      post.con.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      post.brn.toLowerCase().includes(searchTerm.toLowerCase());
+
+    const matchesCategory =
+      selectedCategories.length === 0 ||
+      selectedCategories.some((cat) => Number(post[cat as keyof Post]) > 0);
+
+    return matchesSearch && matchesCategory;
+  });
+  
 
   return (
     <div className="min-h-screen p-6 mt-24 col-start-3 col-end-13">
       
-      <div className="flex items-center justify-between gap-4 w-full">
+      <div className="flex items-center gap-4 w-full pt-6">
         <div>
         <select
           className="p-2 m-4 rounded border border-gray-300"
@@ -72,6 +123,7 @@ export default function Home() {
           <option value="c">Cutoffs</option>
           <option value="r">Ranks</option> 
         </select>
+        
 
         <select
           className="p-2 m-4 rounded border border-gray-300"
@@ -89,26 +141,48 @@ export default function Home() {
         <input
           type="text"
           placeholder="Search..."
-          // value={searchTerm}
-          // onChange={(e) => setSearchTerm(e.target.value)}
-          className="p-2 rounded border border-gray-300"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="p-2 rounded border border-gray-300 w-96"
         />
 
-        <button
-         // onClick={handleSearch}
-          className="bg-blue-500 text-white px-4 py-2 mr-16 rounded hover:bg-blue-600 disabled:opacity-50"
-          disabled={loading}
-        >
-          {loading ? "Loading..." : "Search"}
-        </button>
         </div>
       </div>
+
+        <div className='mx-auto grid grid-cols-12 gap-4 bg-grey-500 px-8 pt-8 pb-4'>
+
+          <div className='col-start-1 col-end-2 items-center'>
+            <p className='uppercase font-semibold text-center text-gray-600'>sort by :</p>
+          </div>
+
+          <div className='col-start-2 col-end-4 cursor-pointer flex gap-1 items-center justify-items-start' onClick={() => handleSort('con')}>
+            <p className='capitalize text-gray-400 hover:text-black'>college name</p>
+            {sortKey === 'con' && (<span className="text-xs text-gray-500 transition-transform duration-200">{sortOrder === 'asc' ? <ChevronUp /> : <ChevronDown />}</span>)}
+          </div>
+
+          <div className='col-start-4 col-end-6 justify-items-center'onClick={() => handleSort('brn')}>
+            <div className='cursor-pointer  flex gap-1 items-center'>
+            <p className='capitalize text-gray-400 hover:text-black'>branch name</p>
+            {sortKey === 'brn' && (<span className="text-xs text-gray-500 transition-transform duration-200">{sortOrder === 'asc' ? <ChevronUp /> : <ChevronDown />}</span>)}
+            </div>
+          </div>
+
+          {(selectedCategories.length === 0 ? ["OC", "BC", "BCM", "MBC", "SC", "SCA", "ST"] : 
+            selectedCategories).map((cat) => (
+            <div key={cat} className='justify-items-center' onClick={() => handleSort(cat as keyof Post)}>
+              <div className='cursor-pointer  flex gap-1 items-center'>
+               <p className='uppercase text-gray-400 hover:text-black'>{cat}</p>
+               {sortKey === cat as keyof Post && (<span className="text-xs text-gray-500 transition-transform duration-200">{sortOrder === 'asc' ? <ChevronUp /> : <ChevronDown />}</span>)}
+               </div>
+            </div>
+          ))}  
+        </div>
 
       <ul>
         {loading && <p className="text-center text-gray-500">Loading...</p>}
         {error && <p className="text-center text-red-500">Error: {error}</p>}
-        {!loading && !error && posts.map((post) => (
-          <li key={post._id} className="border p-6 mx-auto grid grid-cols-12 gap-4 bg-grey-500 hover:shadow-lg my-6 h-40 duration-800">
+        {!loading && !error && filteredPosts.map((post) => (
+          <li key={post._id} className="border p-6 mx-auto grid grid-cols-12 gap-4 bg-grey-500 hover:shadow-lg mb-6 h-40 duration-600">
             <div className='col-start-1 col-end-4 justify-items-center'>
               <p className="font-semibold mb-6 text-center text-gray-600">{post.con}</p>
               <p className="mb-2 text-gray-400 align-center">{post.coc}</p>
@@ -117,27 +191,12 @@ export default function Home() {
               <p className="font-semibold mb-6 text-center text-gray-600">{post.brn}</p>
               <p  className="mb-2 text-gray-400">{post.brc}</p>
             </div>
-            <div className='text-gray-400 justify-items-center'>
-              <p>{Math.round(post.OC * 100) / 100}</p>
-            </div>
-            <div className='text-gray-400 justify-items-center'>
-              <p>{Math.round(post.BC * 100) / 100}</p>
-            </div>
-            <div className='text-gray-400 justify-items-center'>
-              <p>{Math.round(post.BCM * 100) / 100}</p>
-            </div>
-            <div className='text-gray-400 justify-items-center'>
-              <p>{Math.round(post.MBC * 100) / 100}</p>
-            </div>
-            <div className='text-gray-400 justify-items-center'>
-              <p>{Math.round(post.SC * 100) / 100}</p>
-            </div>
-            <div className='text-gray-400 justify-items-center'>
-              <p>{Math.round(post.SCA * 100) / 100}</p>
-            </div>
-            <div className='text-gray-400 justify-items-center'>
-              <p>{Math.round(post.ST * 100) / 100}</p>
-            </div>
+            {(selectedCategories.length === 0 ? ["OC", "BC", "BCM", "MBC", "SC", "SCA", "ST"] : 
+            selectedCategories).map((cat) => (
+                <div key={cat} className='text-gray-400 justify-items-center'>
+                  <p>{Math.round(Number(post[cat as keyof Post]) * 100) / 100}</p>
+                </div>
+              ))}
           </li>
         ))}
       </ul>
