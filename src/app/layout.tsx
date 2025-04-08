@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Counsellyzer",
+  title: "TNEA CutOffs and Ranks",
   description: "The platform provides an intuitive and interactive user experience, allowing students to explore college-wise, branch-wise, and category-wise cutoff trends, helping them make informed admission choices.",
 };
 

@@ -14,20 +14,20 @@ export default function Filter({ selectedCategories, setSelectedCategories }: Fi
 
   return (
     <div className="col-start-1 col-end-3 my-28 fixed">
-      <aside className="bg-white p-4 h-full">
+      <aside className="p-4 h-full">
         <h2 className="text-lg text-gray-800 font-bold mb-4">Filters</h2>
         
         <div className="mb-4">
-          <h3 className="font-semibold text-gray-600 pb-4">Category</h3>
+          <h3 className="font-semibold text-gray-800 pb-4">Category</h3>
           {["OC", "BC", "BCM", "MBC", "SC", "SCA", "ST"].map((cat) => (
-            <div key={cat} className="flex items-center gap-2 pb-4">
-              <input
+            <div key={cat} className="flex items-center gap-2 pb-4 cursor-pointer">
+              <input className="cursor-pointer accent-blue-500"
                 type="checkbox"
                 id={cat}
                 checked={selectedCategories.includes(cat)}
                 onChange={() => handleCheckboxChange(cat)}
               />
-              <label className="text-gray-600" htmlFor={cat}>{cat}</label>
+              <label className="text-gray-800 cursor-pointer" htmlFor={cat}>{cat}</label>
             </div>
           ))}
         </div>

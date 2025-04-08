@@ -8,23 +8,23 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <nav className="bg-white hover:shadow-lg shadow-md py-8 px-32 w-screen flex items-center justify-between fixed">
-      <div className="text-xl font-bold">Counsellyzer</div>
-      <div className="hidden md:flex gap-4">
-        <Button variant="ghost">Help</Button>
+    <nav className="bg-blue-50 z-10 hover:shadow-lg shadow-md py-8 px-32 w-full flex items-center justify-between fixed">
+      <div className="text-xl font-bold text-gray-800">TNEA CutOffs and Ranks</div>
+      <div className="hidden md:flex gap-4 text-gray-800">
+        <Button className="cursor-pointer hover:text-blue-500 cursor-not-allowed" variant="ghost">Help</Button>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost">Language</Button>
+            <Button className="cursor-pointer hover:text-blue-500 cursor-not-allowed" variant="ghost">Language</Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem>English</DropdownMenuItem>
-            <DropdownMenuItem>Tamil</DropdownMenuItem>
-            <DropdownMenuItem>Hindi</DropdownMenuItem>
+            <DropdownMenuItem className="cursor-pointer">English</DropdownMenuItem>
+            <DropdownMenuItem className="cursor-pointer">Tamil</DropdownMenuItem>
+            <DropdownMenuItem className="cursor-pointer">Hindi</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
       <div className="md:hidden">
-        <Button variant="ghost" onClick={() => setMenuOpen(!menuOpen)}>
+        <Button className="cursor-pointer" variant="ghost" onClick={() => setMenuOpen(!menuOpen)}>
           {menuOpen ? <X size={24} /> : <Menu size={24} />}
         </Button>
       </div>

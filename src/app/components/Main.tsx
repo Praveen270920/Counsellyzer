@@ -32,9 +32,7 @@ export default function Home({ selectedCategories }: MainProps) {
   const [searchTerm, setSearchTerm] = useState<string>("");
 
 
-
-
-  // Fetch when dropdowns change
+   // Fetch when dropdowns change
   useEffect(() => {
     if (category && filter) {
       fetchData(category, filter);
@@ -55,7 +53,7 @@ export default function Home({ selectedCategories }: MainProps) {
         return res.json();
       })
       .then((data) => {
-        setPosts(data.slice(0, 10)); // slice the data for dev....
+        setPosts(data.slice( 0, 10)); // slice the data for dev....
       })
       .catch((err: unknown) => {
         if (err instanceof Error) {
@@ -116,17 +114,17 @@ export default function Home({ selectedCategories }: MainProps) {
       <div className="flex items-center gap-4 w-full pt-6">
         <div>
         <select
-          className="p-2 m-4 rounded border border-gray-300"
+          className="p-2 m-4 rounded border cursor-pointer border-gray-300 bg-white/50"
           value={category}
           onChange={(e) => setCategory(e.target.value)}
         >
-          <option value="c">Cutoffs</option>
-          <option value="r">Ranks</option> 
+          <option className='cursor-pointer' value="c">Cutoffs</option>
+          <option className='cursor-pointer' value="r">Ranks</option> 
         </select>
         
 
         <select
-          className="p-2 m-4 rounded border border-gray-300"
+          className="p-2 m-4 rounded border border-gray-300 cursor-pointer bg-white/50"
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
         >
@@ -143,7 +141,7 @@ export default function Home({ selectedCategories }: MainProps) {
           placeholder="Search..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="p-2 rounded border border-gray-300 w-96"
+          className="p-2 rounded border border-gray-300 w-96 bg-white/50 placeholder-gray-800"
         />
 
         </div>
@@ -152,18 +150,25 @@ export default function Home({ selectedCategories }: MainProps) {
         <div className='mx-auto grid grid-cols-12 gap-4 bg-grey-500 px-8 pt-8 pb-4'>
 
           <div className='col-start-1 col-end-2 items-center'>
-            <p className='uppercase font-semibold text-center text-gray-600'>sort by :</p>
+            <p className='uppercase font-semibold text-center text-gray-800'>sort by :</p>
           </div>
 
-          <div className='col-start-2 col-end-4 cursor-pointer flex gap-1 items-center justify-items-start' onClick={() => handleSort('con')}>
-            <p className='capitalize text-gray-400 hover:text-black'>college name</p>
-            {sortKey === 'con' && (<span className="text-xs text-gray-500 transition-transform duration-200">{sortOrder === 'asc' ? <ChevronUp /> : <ChevronDown />}</span>)}
+          <div className='col-start-2 col-end-4 cursor-pointer flex gap-1 items-center justify-items-start'
+           onClick={() => handleSort('con')}>
+            <p className={`capitalize transition-colors duration-200 
+              ${sortKey === 'con' ? 'text-red-600' : 'text-gray-800'}`}>college name</p>
+
+            {sortKey === 'con' && (<span className="text-xs text-white transition-transform duration-200">
+              {sortOrder === 'asc' ? <ChevronUp /> : <ChevronDown />}</span>)}
           </div>
 
           <div className='col-start-4 col-end-6 justify-items-center'onClick={() => handleSort('brn')}>
-            <div className='cursor-pointer  flex gap-1 items-center'>
-            <p className='capitalize text-gray-400 hover:text-black'>branch name</p>
-            {sortKey === 'brn' && (<span className="text-xs text-gray-500 transition-transform duration-200">{sortOrder === 'asc' ? <ChevronUp /> : <ChevronDown />}</span>)}
+            <div className='cursor-pointer flex gap-1 items-center'>
+            <p className={`capitalize transition-colors duration-200 
+              ${sortKey === 'brn' ? 'text-red-600' : 'text-gray-800'}`}>branch name</p>
+
+            {sortKey === 'brn' && (<span className="text-xs text-red-600 transition-transform duration-200">
+              {sortOrder === 'asc' ? <ChevronUp /> : <ChevronDown />}</span>)}
             </div>
           </div>
 
@@ -171,30 +176,39 @@ export default function Home({ selectedCategories }: MainProps) {
             selectedCategories).map((cat) => (
             <div key={cat} className='justify-items-center' onClick={() => handleSort(cat as keyof Post)}>
               <div className='cursor-pointer  flex gap-1 items-center'>
-               <p className='uppercase text-gray-400 hover:text-black'>{cat}</p>
-               {sortKey === cat as keyof Post && (<span className="text-xs text-gray-500 transition-transform duration-200">{sortOrder === 'asc' ? <ChevronUp /> : <ChevronDown />}</span>)}
+               <p className={`uppercase transition-colors duration-200 
+                ${sortKey === cat ? 'text-red-600' : 'text-gray-800'}`}>{cat}</p>
+
+               {sortKey === cat as keyof Post && (<span className="text-xs text-red-600 transition-transform duration-200">
+                {sortOrder === 'asc' ? <ChevronUp /> : <ChevronDown />}</span>)}
                </div>
             </div>
           ))}  
         </div>
 
       <ul>
-        {loading && <p className="text-center text-gray-500">Loading...</p>}
-        {error && <p className="text-center text-red-500">Error: {error}</p>}
+        {loading && <div className="flex justify-center items-center">
+      <div className="w-6 h-6 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+    </div>}
+
+        {error && <p className="text-center cursor-pointer text-red-500">Error: {error}</p>}
+
         {!loading && !error && filteredPosts.map((post) => (
-          <li key={post._id} className="border p-6 mx-auto grid grid-cols-12 gap-4 bg-grey-500 hover:shadow-lg mb-6 h-40 duration-600">
-            <div className='col-start-1 col-end-4 justify-items-center'>
-              <p className="font-semibold mb-6 text-center text-gray-600">{post.con}</p>
+          <li key={post._id} className="border rounded-sm cursor-pointer p-6 mx-auto grid grid-cols-12 gap-4 
+          bg-white/50 hover:shadow-lg mb-6 h-40 duration-600">
+
+            <div className='col-start-1 col-end-4 cursor-pointer justify-items-center'>
+              <p className="font-semibold mb-6 text-center text-gray-800">{post.con}</p>
               <p className="mb-2 text-gray-400 align-center">{post.coc}</p>
             </div>
             <div className='col-start-4 col-end-6 justify-items-center'>
-              <p className="font-semibold mb-6 text-center text-gray-600">{post.brn}</p>
+              <p className="font-semibold mb-6 text-center text-blue-400">{post.brn}</p>
               <p  className="mb-2 text-gray-400">{post.brc}</p>
             </div>
             {(selectedCategories.length === 0 ? ["OC", "BC", "BCM", "MBC", "SC", "SCA", "ST"] : 
             selectedCategories).map((cat) => (
-                <div key={cat} className='text-gray-400 justify-items-center'>
-                  <p>{Math.round(Number(post[cat as keyof Post]) * 100) / 100}</p>
+                <div key={cat} className='text-gray-800 justify-items-center'>
+                  <p> {Number(post[cat as keyof Post]) ? Math.round(Number(post[cat as keyof Post]) * 100) / 100 : "-"}</p>
                 </div>
               ))}
           </li>
