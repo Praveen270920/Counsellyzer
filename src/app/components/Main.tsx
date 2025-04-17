@@ -1,6 +1,6 @@
 "use client"
 import { ChevronDown, ChevronUp } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 type Post = {
   _id: number;
@@ -21,6 +21,8 @@ interface MainProps {
   selectedCategories: string[];
 }
 
+const ITEMS_PER_LOAD = 10;
+
 export default function Home({ selectedCategories }: MainProps) {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -30,8 +32,9 @@ export default function Home({ selectedCategories }: MainProps) {
   const [sortKey, setSortKey] = useState<keyof Post | null>(null);
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
   const [searchTerm, setSearchTerm] = useState<string>("");
-
-
+  const [visibleCount, setVisibleCount] = useState(ITEMS_PER_LOAD);
+  const loaderRef = useRef<HTMLDivElement | null>(null);
+  
    // Fetch when dropdowns change
   useEffect(() => {
     if (category && filter) {
@@ -53,7 +56,7 @@ export default function Home({ selectedCategories }: MainProps) {
         return res.json();
       })
       .then((data) => {
-        setPosts(data.slice( 0, 10)); // slice the data for dev....
+        setPosts(data);
       })
       .catch((err: unknown) => {
         if (err instanceof Error) {
@@ -107,6 +110,30 @@ export default function Home({ selectedCategories }: MainProps) {
     return matchesSearch && matchesCategory;
   });
   
+  const visibleItems = filteredPosts.slice(0, visibleCount);
+  const hasMore = visibleCount < filteredPosts.length;
+
+  useEffect(() => {
+    if (!hasMore) return;
+  
+    const observer = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) {
+        setVisibleCount((prev) => prev + ITEMS_PER_LOAD);
+      }
+    });
+  
+    const currentLoader = loaderRef.current;
+  
+    if (currentLoader instanceof Element) {
+      observer.observe(currentLoader);
+    }
+  
+    return () => {
+      if (currentLoader instanceof Element) {
+        observer.unobserve(currentLoader);
+      }
+    };
+  }, [hasMore]);  
 
   return (
     <div className="min-h-screen p-6 mt-24 col-start-3 col-end-13">
@@ -193,7 +220,7 @@ export default function Home({ selectedCategories }: MainProps) {
 
         {error && <p className="text-center cursor-pointer text-red-500">Error: {error}</p>}
 
-        {!loading && !error && filteredPosts.map((post) => (
+        {!loading && !error && visibleItems.map((post) => (
           <li key={post._id} className="border rounded-sm cursor-pointer p-6 mx-auto grid grid-cols-12 gap-4 
           bg-white/50 hover:shadow-lg mb-6 h-40 duration-600">
 
@@ -213,6 +240,7 @@ export default function Home({ selectedCategories }: MainProps) {
               ))}
           </li>
         ))}
+         {hasMore && <div ref={loaderRef} className="h-10" />}
       </ul>
     </div>
   );
