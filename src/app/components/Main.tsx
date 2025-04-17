@@ -37,6 +37,7 @@ export default function Home({ selectedCategories }: MainProps) {
   
    // Fetch when dropdowns change
   useEffect(() => {
+    setVisibleCount(ITEMS_PER_LOAD);
     if (category && filter) {
       fetchData(category, filter);
     }
@@ -185,7 +186,7 @@ export default function Home({ selectedCategories }: MainProps) {
             <p className={`capitalize transition-colors duration-200 
               ${sortKey === 'con' ? 'text-red-600' : 'text-gray-800'}`}>college name</p>
 
-            {sortKey === 'con' && (<span className="text-xs text-white transition-transform duration-200">
+            {(sortKey === 'con') && (<span className="text-xs text-red-600 transition-transform duration-200">
               {sortOrder === 'asc' ? <ChevronUp /> : <ChevronDown />}</span>)}
           </div>
 
@@ -194,7 +195,7 @@ export default function Home({ selectedCategories }: MainProps) {
             <p className={`capitalize transition-colors duration-200 
               ${sortKey === 'brn' ? 'text-red-600' : 'text-gray-800'}`}>branch name</p>
 
-            {sortKey === 'brn' && (<span className="text-xs text-red-600 transition-transform duration-200">
+            {(sortKey === 'brn') && (<span className="text-xs text-red-600 transition-transform duration-200">
               {sortOrder === 'asc' ? <ChevronUp /> : <ChevronDown />}</span>)}
             </div>
           </div>
@@ -206,7 +207,7 @@ export default function Home({ selectedCategories }: MainProps) {
                <p className={`uppercase transition-colors duration-200 
                 ${sortKey === cat ? 'text-red-600' : 'text-gray-800'}`}>{cat}</p>
 
-               {sortKey === cat as keyof Post && (<span className="text-xs text-red-600 transition-transform duration-200">
+               {(sortKey === cat as keyof Post) && (<span className="text-xs text-red-600 transition-transform duration-200">
                 {sortOrder === 'asc' ? <ChevronUp /> : <ChevronDown />}</span>)}
                </div>
             </div>
@@ -221,15 +222,15 @@ export default function Home({ selectedCategories }: MainProps) {
         {error && <p className="text-center cursor-pointer text-red-500">Error: {error}</p>}
 
         {!loading && !error && visibleItems.map((post) => (
-          <li key={post._id} className="border rounded-sm cursor-pointer p-6 mx-auto grid grid-cols-12 gap-4 
+          <li key={post._id} className="border overflow-clip overflow-hidden rounded-sm cursor-pointer p-6 mx-auto grid grid-cols-12 gap-4 
           bg-white/50 hover:shadow-lg mb-6 h-40 duration-600">
 
             <div className='col-start-1 col-end-4 cursor-pointer justify-items-center'>
-              <p className="font-semibold mb-6 text-center text-gray-800">{post.con}</p>
+              <p className="font-semibold mb-2 text-center text-gray-800">{post.con}</p>
               <p className="mb-2 text-gray-400 align-center">{post.coc}</p>
             </div>
             <div className='col-start-4 col-end-6 justify-items-center'>
-              <p className="font-semibold mb-6 text-center text-blue-400">{post.brn}</p>
+              <p className="font-semibold mb-2 text-center text-blue-400">{post.brn}</p>
               <p  className="mb-2 text-gray-400">{post.brc}</p>
             </div>
             {(selectedCategories.length === 0 ? ["OC", "BC", "BCM", "MBC", "SC", "SCA", "ST"] : 
