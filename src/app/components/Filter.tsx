@@ -1,4 +1,7 @@
 "use client"
+
+import { Funnel } from "lucide-react";
+
 interface FiltersProps {
   selectedfilters: string[];
   setSelectedfilters: (filters: string[]) => void;
@@ -13,9 +16,9 @@ export default function Filter({ selectedfilters, setSelectedfilters }: FiltersP
   };
 
   return (
-    <div className="col-start-1 col-end-3 my-28 fixed">
-      <aside className="p-4 h-full">
-        <h2 className="text-lg text-gray-800 font-bold mb-4">Filters</h2>
+    <div className="col-start-3 col-end-5 my-24">
+      <aside className="p-4 border pr-12 rounded-2xl fixed">
+        <h2 className="text-lg text-gray-800 font-bold mb-4 flex items-center gap-2"> <Funnel size={20}/> Filters</h2>
         
         <div className="mb-4">
           <h3 className="font-semibold text-gray-800 pb-4">Category</h3>

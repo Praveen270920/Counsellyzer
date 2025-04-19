@@ -117,8 +117,8 @@ export default function Home({ selectedfilters }: MainProps) {
   useEffect(() => {
     if (!hasMore) return;
   
-    const observer = new IntersectionObserver((collagelists) => {
-      if (collagelists[0].isIntersecting) {
+    const observer = new IntersectionObserver((collagelist) => {
+      if (collagelist[0].isIntersecting) {
         setVisibleCount((prev) => prev + ITEMS_PER_LOAD);
       }
     });
@@ -137,22 +137,25 @@ export default function Home({ selectedfilters }: MainProps) {
   }, [hasMore]);  
 
   return (
-    <div className="min-h-screen p-6 mt-24 col-start-3 col-end-13">
-      
-      <div className="flex items-center gap-4 w-full pt-6">
-        <div>
+    <div className="min-h-screen p-6 mt-24 col-start-5 col-end-11">
+      <div className='ml-24 w-1/2 flex items-center justify-center border border-2 rounded-lg'>
+        <input
+          type="text"
+          placeholder="Search colleges by name or location or branch  .  .  ."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="p-2 rounded-l-lg w-full bg-gray-50 placeholder-gray-800"
+        />
         <select
-          className="p-2 m-4 rounded border cursor-pointer border-gray-300 bg-gray-50"
+          className="p-2 cursor-pointer border-gray-300 bg-gray-50"
           value={cutoff}
           onChange={(e) => setCutoff(e.target.value)}
         >
           <option className='cursor-pointer' value="c">Cutoffs</option>
-          <option className='cursor-pointer' value="r">Ranks</option> 
+          <option className='cursor-pointer' value="r">Ranks</option>
         </select>
-        
-
         <select
-          className="p-2 m-4 rounded border border-gray-300 cursor-pointer bg-gray-50"
+          className="p-2 pl-8 cursor-pointer bg-gray-50"
           value={year}
           onChange={(e) => setYear(e.target.value)}
         >
@@ -162,17 +165,11 @@ export default function Home({ selectedfilters }: MainProps) {
           <option className='text-gray-600' value="1">2021</option>
           <option className='text-gray-600' value="0">2020</option>
         </select>
-        </div>
-        <div className='w-1/2'>
-        <input
-          type="text"
-          placeholder="Search colleges by name or location or branch  .  .  ."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="p-2 rounded border border-gray-300 w-full bg-gray-50 placeholder-gray-800"
-        />
-
-        </div>
+        <button onClick={() => { /* Handle Search Button Action */ }}
+          className="pl-8 p-2 rounded-r-lg bg-gray-50 hover:bg-blue-500 focus:outline-none"
+          >
+          Search
+        </button>
       </div>
 
         <div className='mx-auto grid grid-cols-12 gap-4 bg-grey-500 px-8 pt-8 pb-4'>
@@ -222,8 +219,13 @@ export default function Home({ selectedfilters }: MainProps) {
         {error && <p className="text-center cursor-pointer text-red-500">Error: {error}</p>}
 
         {!loading && !error && visibleCollagelists.map((collagelist) => (
-          <li key={collagelist._id} className="border overflow-clip overflow-hidden rounded-sm cursor-pointer p-6 mx-auto grid grid-cols-12 gap-4 
-          bg-gray-50 hover:shadow-lg mb-6 h-40 duration-600">
+          <li key={collagelist._id} className="border overflow-clip overflow-hidden rounded-sm cursor-pointer p-4 mx-auto grid grid-cols-12 gap-2
+          bg-gray-50 hover:shadow-lg mb-4 h-32 duration-600">
+
+            {/* <div className="font-medium">
+              <div>{collagelist.con}</div>
+              <div className="text-xs text-muted-foreground">{collagelist.coc}</div>
+            </div> */}
 
             <div className='col-start-1 col-end-4 cursor-pointer justify-items-center'>
               <p className="mb-2 text-center text-gray-800">{collagelist.con}</p>

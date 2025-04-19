@@ -10,7 +10,7 @@ export default function Home() {
 
   return (
 
-   <div className="grid grid-cols-12 gap-2 min-h-screen bg-white font-sans">
+   <div className="grid grid-cols-12 gap-2 text-sm min-h-screen bg-white font-sans">
 
     <Filter selectedfilters={selectedfilters}
         setSelectedfilters={setSelectedfilters}
