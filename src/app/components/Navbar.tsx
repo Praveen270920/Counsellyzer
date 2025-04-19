@@ -8,8 +8,8 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <nav className="bg-blue-50 z-10 hover:shadow-lg shadow-md py-8 px-32 w-full flex items-center justify-between fixed">
-      <div className="text-xl font-bold text-gray-800">TNEA CutOffs and Ranks</div>
+    <nav className="bg-white hover:shadow-lg shadow-md py-8 px-32 w-full flex items-center justify-between fixed">
+      <div className="text-2xl font-bold text-blue-800">TNEA CutOffs and Ranks</div>
       <div className="hidden md:flex gap-4 text-gray-800">
         <Button className="cursor-pointer hover:text-blue-500 cursor-not-allowed" variant="ghost">Help</Button>
         <DropdownMenu>

@@ -1,15 +1,15 @@
 "use client"
 interface FiltersProps {
-  selectedCategories: string[];
-  setSelectedCategories: (categories: string[]) => void;
+  selectedfilters: string[];
+  setSelectedfilters: (filters: string[]) => void;
 }
 
-export default function Filter({ selectedCategories, setSelectedCategories }: FiltersProps) {
+export default function Filter({ selectedfilters, setSelectedfilters }: FiltersProps) {
   const handleCheckboxChange = (value: string) => {
-    const updated = selectedCategories.includes(value)
-      ? selectedCategories.filter((item) => item !== value)
-      : [...selectedCategories, value];
-    setSelectedCategories(updated);
+    const updated = selectedfilters.includes(value)
+      ? selectedfilters.filter((item) => item !== value)
+      : [...selectedfilters, value];
+    setSelectedfilters(updated);
   };
 
   return (
@@ -24,7 +24,7 @@ export default function Filter({ selectedCategories, setSelectedCategories }: Fi
               <input className="cursor-pointer accent-blue-500"
                 type="checkbox"
                 id={cat}
-                checked={selectedCategories.includes(cat)}
+                checked={selectedfilters.includes(cat)}
                 onChange={() => handleCheckboxChange(cat)}
               />
               <label className="text-gray-800 cursor-pointer" htmlFor={cat}>{cat}</label>
